@@ -1,0 +1,17 @@
+{
+  "name": "com.mathman.com.proving.util",
+  "version": "1.0.0",
+  "displayName": "Proving Utilities",
+  "description": "Collection of useful utilities",
+  "unity": "2021.2",
+  "unityRelease": "0a11",
+  "keywords": [
+    ""
+  ],
+  "author": {
+    "name": "Math-Man",
+    "email": "",
+    "url": ""
+  },
+  "type": "library"
+}
