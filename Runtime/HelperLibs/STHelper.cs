@@ -4,9 +4,11 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
+/// <summary>
+/// Physics and GameObject related helpers
+/// </summary>
 public static class STHelper
 {
-
     public static List<Collider> GetCollidersInRangeByTag(Vector3 position, float radius, string tag)
     {
         Collider[] colliders = Physics.OverlapSphere(position, radius);
@@ -26,8 +28,6 @@ public static class STHelper
     {
         return colliders.OrderBy(col => Vector3.Distance(col.transform.position, position)).ToArray();
     }
-
-
 
     public static List<Collider2D> GetCollidersInRange2D(Vector3 position, float radius)
     {
@@ -76,7 +76,6 @@ public static class STHelper
 
     public static GameObject GetObjectOnCursorPosition2D(Camera cameraMain) 
     {
-        //RaycastHit2D hit2 = Physics2D.Raycast(Input.mousePosition, Camera.main.transform.position - Input.mousePosition, 0, 001, 1000);
         RaycastHit2D hit = Physics2D.Raycast(cameraMain.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
 
         if (hit.collider != null)
@@ -160,6 +159,101 @@ public static class STHelper
     {
         return (value - from1) / (to1 - from1) * (to2 - from2) + from2;
     }
+
+
+    public static RaycastHit LayeredRayCast(Vector3 castPos, Vector3 castDir, out bool castHit, params string[] layerNames)
+    {
+        int layer_mask = LayerMask.GetMask(layerNames);
+        RaycastHit hitInfo;
+        if (Physics.Raycast(castPos, castDir, out hitInfo, 20, layer_mask))
+        {
+            castHit = true;
+        }
+        else
+            castHit = false;
+        return hitInfo;
+    }
+
+    public static bool LerpWithCurveOffset(GameObject gameObj,
+        AnimationCurve curveX, AnimationCurve curveY, AnimationCurve curveZ,
+        float curvePosition, float timeStep, float offsetAmplitude,
+        Vector3 startPosition, Vector3 targetPosition, bool forceTargetPosition) 
+    {
+
+        //Example Usage: STHelper.LerpWithCurveOffset(gameObject, curveX, curveY, curveZ, curvePosition += timeStep * Time.deltaTime, timeStep * Time.deltaTime, 1f, startPosition, targetPosition, true);
+
+        float curveMin = Mathf.Min(curveX.keys.FirstOrDefault().time, curveY.keys.FirstOrDefault().time, curveZ.keys.FirstOrDefault().time);
+        float curveMax = Mathf.Max(curveX.keys.LastOrDefault().time, curveY.keys.LastOrDefault().time, curveZ.keys.LastOrDefault().time);
+
+        if (curvePosition >= curveMax) 
+        {
+            if(forceTargetPosition)
+                gameObj.transform.position = targetPosition;
+            return true;
+        }
+
+        float clampedStep = Mathf.Clamp(curvePosition + timeStep, curveMin, curveMax);
+        Vector3 evaluatedOffset = new Vector3(curveX.Evaluate(clampedStep),
+                                          curveY.Evaluate(clampedStep),
+                                          curveZ.Evaluate(clampedStep));
+
+        gameObj.transform.position = Vector3.Lerp(startPosition, targetPosition, curvePosition) + (evaluatedOffset * offsetAmplitude);
+
+        if (timeStep >= curveMax)
+        {
+            if (forceTargetPosition)
+                gameObj.transform.position = targetPosition;
+            return (true);
+        }
+        else
+            return false;
+         
+    }
+
+    public static bool RotateByCurve(GameObject gameObj,
+    AnimationCurve curveX, AnimationCurve curveY, AnimationCurve curveZ, float curvePosition, float timeStep)
+    {
+        //STHelper.RotateByCurve(gameObject, crvx, crvy, crvz, cpos, timeStep * Time.deltaTime);
+        float curveMin = Mathf.Min(curveX.keys.FirstOrDefault().time, curveY.keys.FirstOrDefault().time, curveZ.keys.FirstOrDefault().time);
+        float curveMax = Mathf.Max(curveX.keys.LastOrDefault().time, curveY.keys.LastOrDefault().time, curveZ.keys.LastOrDefault().time);
+
+        if (curvePosition >= curveMax)
+            return true;
+
+        float clampedStep = Mathf.Clamp(curvePosition + timeStep, curveMin, curveMax);
+        Vector3 evaluatedOffset = new Vector3(curveX.Evaluate(clampedStep),
+                                          curveY.Evaluate(clampedStep),
+                                          curveZ.Evaluate(clampedStep));
+
+        gameObj.transform.Rotate(evaluatedOffset.normalized * curvePosition / (curveMax - curveMin));
+
+        if (timeStep >= curveMax)
+            return (true);
+        else
+            return false;
+
+    }
+
+    public static float DotIdentity(Vector3 a, Vector3 b) 
+    {
+        return a.magnitude * b.magnitude * Mathf.Cos(Vector3.Angle(a,b) * Mathf.Deg2Rad);
+    }
+
+    public static float DotLength(Vector3 a)
+    {
+        return Mathf.Sqrt(Vector3.Dot(a, a));
+    }
+
+    public static float DotAngle(Vector3 a, Vector3 b)
+    {
+        return Mathf.Acos(Vector3.Dot(a,b) / (a.magnitude*b.magnitude));
+    }
+
+    public static float DotSqr(Vector3 a)
+    {
+        return Vector3.Dot(a, a);
+    }
+
 
 
 
