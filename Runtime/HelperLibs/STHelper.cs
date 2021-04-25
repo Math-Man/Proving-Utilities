@@ -254,6 +254,23 @@ public static class STHelper
         return Vector3.Dot(a, a);
     }
 
+    public static void RotateToCursor2D(Transform transform, Camera camera, float rotationSpeed)
+    {
+        Vector2 direction = camera.ScreenToWorldPoint(Input.mousePosition) - transform.position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+
+    }
+
+    public static void RotateToTarget2D(Transform transform, Transform targetTransform, Camera camera, float rotationSpeed)
+    {
+        Vector2 direction = targetTransform.position - transform.position;
+        float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
+        Quaternion rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        transform.rotation = Quaternion.Slerp(transform.rotation, rotation, rotationSpeed * Time.deltaTime);
+
+    }
 
 
 
