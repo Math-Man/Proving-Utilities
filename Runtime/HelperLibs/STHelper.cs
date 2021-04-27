@@ -272,6 +272,19 @@ public static class STHelper
 
     }
 
+    public static Vector3 GetMouseWorldPositionByPlane(Camera camera, Plane plane = null)
+    {
+        if(plane == null)
+            plane = new Plane(Vector3.up, 0);
 
+        float distance;
+        Ray ray = camera.ScreenPointToRay(Input.mousePosition);
+
+        var worldPosition = new Vector3();
+        if (plane.Raycast(ray, out distance))
+            worldPosition = ray.GetPoint(distance);
+
+        return worldPosition;
+    }
 
 }
