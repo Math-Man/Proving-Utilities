@@ -272,9 +272,9 @@ public static class STHelper
 
     }
 
-    public static Vector3 GetMouseWorldPositionByPlane(Camera camera, Plane plane = null)
+    public static Vector3 GetMouseWorldPositionByPlane(Camera camera, Plane plane, bool useDefaultPlane = true)
     {
-        if(plane == null)
+        if (useDefaultPlane)
             plane = new Plane(Vector3.up, 0);
 
         float distance;
@@ -286,5 +286,8 @@ public static class STHelper
 
         return worldPosition;
     }
+
+
+
 
 }
