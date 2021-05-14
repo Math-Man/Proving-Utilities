@@ -30,7 +30,7 @@ public class MovementBehaviour : MonoBehaviour
         zRotationVelocity += zTurnAcceleration * Time.deltaTime;
     }
 
-    private void FixedUpdate()
+    private void Update()
     {
         // apply velocity drag
         Velocity = Velocity * (1 - Time.deltaTime * velocityDrag);
