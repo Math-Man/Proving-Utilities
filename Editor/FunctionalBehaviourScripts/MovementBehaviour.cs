@@ -20,8 +20,8 @@ public class MovementBehaviour : MonoBehaviour
 
     public void ApplyForce(Vector3 force)
     {
-        Vector3 acceleration = force * verticalInputAcceleration;
-        Velocity += acceleration * Time.deltaTime;
+        Vector3 acceleration = force * verticalInputAcceleration * 2;
+        Velocity += acceleration;
     }
 
     public void ApplyRotationalForce(float turnAngleForce)
