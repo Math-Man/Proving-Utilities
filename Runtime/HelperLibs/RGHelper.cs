@@ -1,4 +1,4 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -36,6 +36,21 @@ public static class RGHelper
         var V = new Vector3(PointOnCircle.x, PointOnCircle.y, Mathf.Cos(angleInRad));
         return (targetDirection * V * radius) + offset;
 
+    }
+
+    public static Vector3 RandomPositionAroundHemiCircle(Vector3 Center, Vector3 targetLookPosition, float angle, float radius, float z = 0)
+    {
+        Quaternion look = Quaternion.LookRotation(targetLookPosition - Center);
+        var rp = RGHelper.RandomPositionOnHemiSphere(look, angle, radius, targetLookPosition);
+        rp.z = z;
+        return (rp - Center).normalized * radius;
+    }
+
+    public static Vector3 RandomPositionAroundHemiCircle(Quaternion lookRotation, Vector3 Center, Vector3 targetLookPosition, float angle, float radius, float z = 0)
+    {
+        var rp = RGHelper.RandomPositionOnHemiSphere(lookRotation, angle, radius, targetLookPosition);
+        rp.z = z;
+        return (rp - Center).normalized * radius;
     }
 
 
