@@ -40,7 +40,7 @@ public static class RGHelper
 
     public static Vector3 RandomPositionAroundHemiCircle(Vector3 Center, Vector3 targetLookPosition, float angle, float radius, float z = 0)
     {
-        Quaternion look = Quaternion.LookRotation(Center - targetLookPosition);
+        Quaternion look = Quaternion.LookRotation(targetLookPosition - Center);
         var rp = RGHelper.RandomPositionOnHemiSphere(look, angle, radius, targetLookPosition);
         rp.z = z;
         return (rp - Center).normalized * radius;
