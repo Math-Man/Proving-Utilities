@@ -1,11 +1,12 @@
-﻿using System.Collections;
+﻿#if (UNITY_EDITOR)
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor;
-using UnityEditor.PackageManager.Requests;
 using System;
 using System.Runtime.InteropServices;
+using UnityEditor;
 using UnityEditor.SceneManagement;
+
 using static StatManager;
 
 [CustomEditor(typeof(StatManager))]
@@ -91,4 +92,4 @@ public class StatManagerEditor : Editor
 
 
 }
-   
+#endif
