@@ -57,14 +57,14 @@ public static class RGHelper
     {
         List<Vector3> upts = new List<Vector3>();
         float inc = Mathf.PI * (3 - Mathf.Sqrt(5));
-        float off = 2.0f / n;
+        float off = 2.0f / numberOfPoints;
         float x = 0;
         float y = 0;
         float z = 0;
         float r = 0;
         float phi = 0;
        
-        for (var k = 0; k < n; k++){
+        for (var k = 0; k < numberOfPoints; k++){
             y = k * off - 1 + (off /2);
             r = Mathf.Sqrt(1 - y * y);
             phi = k * inc;
@@ -75,6 +75,29 @@ public static class RGHelper
         }
         Vector3[] pts = upts.ToArray();
         return pts;
+    }
+    
+    public static List<RaycastHit> CircularRaycastOnXY(Vector3 origin, int rayCount, float maxDistance, int layerMask)
+    {
+        List<RaycastHit> contacts = new List<RaycastHit>();
+            
+        float angle = 0;
+        for (int i=0; i<rayCount; i++) 
+        {
+            float x = Mathf.Sin (angle);
+            float y = Mathf.Cos (angle);
+            float z = origin.z;
+            angle += 2 * Mathf.PI / rayCount;
+ 
+            Vector3 dir = new Vector3 (origin.x + x, origin.y + y, z);
+            RaycastHit hit;
+            if (Physics.Raycast(origin, dir, out hit, maxDistance, layerMask))
+            {
+                contacts.Add(hit);
+            }
+        }
+
+        return contacts;
     }
 
 
