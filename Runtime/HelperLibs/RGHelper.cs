@@ -52,8 +52,7 @@ public static class RGHelper
         rp.z = z;
         return (rp - Center).normalized * radius;
     }
-
-    public static Vector3[] UniformPointsOnSphere(int n, float radius, Vector3 offset)
+    public static Vector3[] UniformPointsOnSphere(Vector3 pos, int n, float radius, Vector3 offset)
     {
         List<Vector3> upts = new List<Vector3>();
         float inc = Mathf.PI * (3 - Mathf.Sqrt(5));
@@ -70,14 +69,12 @@ public static class RGHelper
             phi = k * inc;
             x = Mathf.Cos(phi) * r;
             z = Mathf.Sin(phi) * r;
-            Debug.DrawLine(transform.position, offset + new Vector3(x, y, z)*radius);
+            Debug.DrawLine(pos, offset + new Vector3(x, y, z)*radius);
             upts.Add(offset + new Vector3(x, y, z)*radius);
         }
         Vector3[] pts = upts.ToArray();
         return pts;
     }
-    
-
     
     
     public static List<RaycastHit> CircularRaycastOnXY(Vector3 origin, int rayCount, float maxDistance, int layerMask)
@@ -104,7 +101,7 @@ public static class RGHelper
     }
     
     
-    private List<RaycastHit> SphericalUniformRaycast(int n, float radius, Vector3 offset, int layermask)
+    private static List<RaycastHit> SphericalUniformRaycast(Vector3 pos, int n, float radius, Vector3 offset, int layermask)
     {
         var hits = new List<RaycastHit>();
         float inc = Mathf.PI * (3 - Mathf.Sqrt(5));
@@ -124,7 +121,7 @@ public static class RGHelper
             z = Mathf.Sin(phi) * r;
 
             var position = offset + new Vector3(x, y, z) * radius;
-            var direction = position - transform.position;
+            var direction = position - pos;
 
             RaycastHit hit;
             if (Physics.Raycast(position, direction, out hit, radius, layermask))
