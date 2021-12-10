@@ -9,6 +9,29 @@ using UnityEngine;
 /// </summary>
 public static class STHelper
 {
+    
+    public static Vector2 ToVector2(this Vector3 input) => new Vector2(input.x, input.y);
+    public static Vector3 Flatten(this Vector3 input) => new Vector3(input.x, 0, input.z);
+    public static Vector3Int ToVector3Int(this Vector3 input) => new Vector3Int((int)(input.x), (int)(input.y), (int)(input.z));
+
+    public static void DestroyChildren(this Transform transform, float delay)
+    {
+        foreach (Transform child in transform)
+        {
+            Object.Destroy(child.gameObject, delay);   
+        }
+    }
+
+    public static void SetLayersRecursively(this GameObject gameObject, int layer)
+    {
+        gameObject.layer = layer;
+        foreach (Transform transform in gameObject.transform)
+        {
+            transform.gameObject.SetLayersRecursively(layer);
+        }
+    }
+
+    
     public static List<Collider> GetCollidersInRangeByTag(Vector3 position, float radius, string tag)
     {
         Collider[] colliders = Physics.OverlapSphere(position, radius);
